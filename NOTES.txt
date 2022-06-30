@@ -1,0 +1,25 @@
+PLAN:
+* start by making the API
+    * express
+* make the router in a file
+    * add the middleware - bodyparser
+* make the calls
+* add the database aspect
+
+
+
+
+THOUGHTS:
+
+* make a router file called inventory
+* make routes such as
+    * get all
+    * add one
+    * remove one
+
+* experiment with adding many tables
+* one database, many tables
+
+* add a simple front end
+    * list inventory in a box
+    * get list of all item types, then click one to update it
