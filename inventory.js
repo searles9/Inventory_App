@@ -1,17 +1,38 @@
-// Will contain the inventory router
 const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const path = require('path')
-const PORT = 8080;
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-  });
+const inventoryRouter = express.Router();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname, '/website')))
+const tempData = {
+    '1': {
+      id: 1,
+      item: 'Item 1',
+      quantity: 2,
+      price: 3.99
+    },
+    '2': {
+      id: 2,
+      item: 'Item 2',
+      quantity: 45,
+      price: 3.99
+    },
+    '3': {
+      id: 3,
+      item: 'Item 3',
+      quantity: 5,
+      price: 50
+    }
+}
 
-app.get('/',function(req,res) {
-    res.sendFile(__dirname + '/website/index.html')
+inventoryRouter.get('/', (req, res, next) => {
+    res.json(tempData)
 })
+
+inventoryRouter.get('/:item', (req, res, next) => {
+    const item = tempData[req.params.item]
+    if (item) {
+        res.json(item)
+    } else {
+        res.status(404).send();
+    }
+})
+
+module.exports = inventoryRouter;

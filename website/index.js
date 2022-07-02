@@ -1,5 +1,3 @@
-// JS for the front end
+// In progress
 
-function test_js() {
-    console.log('Test Worked!!!!')
-}
+const baseUrl = 'http://localhost:8080';
