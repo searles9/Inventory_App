@@ -122,9 +122,30 @@ body {
 /*========================*/
 
 .facts-container {
-    background-color: red;
-    height: 30vh;
+    height: 25vh;
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden; 
+    white-space: nowrap;
 }
+
+.fact {
+    /* -- */
+    width: 30vh;
+    height: 90%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    margin-left: 1.5vh;
+    background-color: white;
+    display: inline-block;
+    border-radius: 5%;
+    text-align:center;
+    vertical-align: top;
+    padding-top: 3%;
+}
+
+/*
+* Add fact title (use a class for h1
+* Add fact value  (use a class for h1)
+
+*/
