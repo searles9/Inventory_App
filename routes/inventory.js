@@ -1,5 +1,6 @@
 const express = require('express');
 const inventoryRouter = express.Router();
+const db = require('../services/db')
 
 const tempData = {
     '1': {

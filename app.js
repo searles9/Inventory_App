@@ -1,7 +1,7 @@
 // Will contain the inventory router
 const express = require('express');
 const app = express();
-const inventoryRouter = require('./inventory')
+const inventoryRouter = require('./routes/inventory')
 const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = 8080;
@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname, '/website')))
+app.use(express.static(path.join(__dirname, './website')))
 app.use('/inventory', inventoryRouter)
 
 

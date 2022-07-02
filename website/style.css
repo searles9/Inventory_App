@@ -211,7 +211,7 @@ div.dbTable {
   }
   .dbTable .tableFootStyle .links a{
     display: inline-block;
-    background: #1C6EA4;
+    background: var(--green5);
     color: #FFFFFF;
     padding: 2px 8px;
     border-radius: 5px;
