@@ -2,29 +2,24 @@ const express = require('express');
 const inventoryRouter = express.Router();
 const db = require('../services/db')
 
-const tempData = {
-    '1': {
-      id: 1,
-      item: 'Item 1',
-      quantity: 2,
-      price: 3.99
-    },
-    '2': {
-      id: 2,
-      item: 'Item 2',
-      quantity: 45,
-      price: 3.99
-    },
-    '3': {
-      id: 3,
-      item: 'Item 3',
-      quantity: 5,
-      price: 50
-    }
-}
+
 
 inventoryRouter.get('/', (req, res, next) => {
-    res.json(tempData)
+  // offset - what row to start at 
+  // limit - how many results to return
+  const query = `SELECT * from Inventory OFFSET $offset LIMIT $limit`; 
+  let limit = req.query.limit
+  let offset = req.query.page === 1 ? 0 : (req.query.page  * limit)
+
+  db.all(query, {
+    $offset: offset,
+    $limit: limit
+  }, function(err, rows) {
+    if(err) {
+        throw err;
+    }
+    res.json(rows)
+  })
 })
 
 inventoryRouter.get('/:item', (req, res, next) => {
