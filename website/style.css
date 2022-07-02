@@ -122,17 +122,17 @@ body {
 /*========================*/
 
 .facts-container {
-    height: 25vh;
+    height: auto;
     width: 100%;
     overflow-x: scroll;
     overflow-y: hidden; 
-    white-space: nowrap;
+    white-space: nowrap; 
+    overflow-wrap: break-word;
 }
 
 .fact {
     /* -- */
     width: 30vh;
-    height: 90%;
     margin-top: 1%;
     margin-bottom: 1%;
     margin-left: 1.5vh;
@@ -141,12 +141,93 @@ body {
     border-radius: 5%;
     text-align:center;
     vertical-align: top;
-    padding-top: 3%;
+    padding-top: 2%;
     color: var(--green5);
+    
 }
 
-/*
-* Add fact title (use a class for h1
-* Add fact value  (use a class for h1)
+.fact-title {
+    font-size: 3vh;
+}
 
-*/
+.fact-value {
+    font-size: 4vh;
+}
+
+/*========================*/
+/* THE TABLE DIVS*/
+/*========================*/
+
+div.dbTable {
+    border: 1px solid #1C6EA4;
+    background-color: #EEEEEE;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  .divTable.dbTable .divTableCell, .divTable.dbTable .divTableHead {
+    border: 1px solid #AAAAAA;
+    padding: 7px 10px;
+  }
+  .divTable.dbTable .divTableBody .divTableCell {
+    font-size: 13px;
+    color: #203113;
+  }
+  .divTable.dbTable .divTableRow:nth-child(even) {
+    background: #E8F3E8;
+  }
+  .divTable.dbTable .divTableHeading {
+    background: #559E54;
+    background: -moz-linear-gradient(top, #7fb67f 0%, #66a765 66%, #559E54 100%);
+    background: -webkit-linear-gradient(top, #7fb67f 0%, #66a765 66%, #559E54 100%);
+    background: linear-gradient(to bottom, #7fb67f 0%, #66a765 66%, #559E54 100%);
+    border-bottom: 2px solid #444444;
+  }
+  .divTable.dbTable .divTableHeading .divTableHead {
+    font-size: 15px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-left: 2px solid #92C591;
+  }
+  .divTable.dbTable .divTableHeading .divTableHead:first-child {
+    border-left: none;
+  }
+  
+  .dbTable .tableFootStyle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #92C591;
+    background: -moz-linear-gradient(top, #add3ac 0%, #9dca9c 66%, #92C591 100%);
+    background: -webkit-linear-gradient(top, #add3ac 0%, #9dca9c 66%, #92C591 100%);
+    background: linear-gradient(to bottom, #add3ac 0%, #9dca9c 66%, #92C591 100%);
+    border-top: 2px solid #444444;
+  }
+  .dbTable .tableFootStyle {
+    font-size: 14px;
+  }
+  .dbTable .tableFootStyle .links {
+       text-align: right;
+  }
+  .dbTable .tableFootStyle .links a{
+    display: inline-block;
+    background: #1C6EA4;
+    color: #FFFFFF;
+    padding: 2px 8px;
+    border-radius: 5px;
+  }
+  .dbTable.outerTableFooter {
+    border-top: none;
+  }
+  .dbTable.outerTableFooter .tableFootStyle {
+    padding: 3px 5px; 
+  }
+  /* DivTable.com */
+  .divTable{ display: table; }
+  .divTableRow { display: table-row; }
+  .divTableHeading { display: table-header-group;}
+  .divTableCell, .divTableHead { display: table-cell;}
+  .divTableHeading { display: table-header-group;}
+  .divTableFoot { display: table-footer-group;}
+  .divTableBody { display: table-row-group;}
+
