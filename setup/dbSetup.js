@@ -3,9 +3,9 @@ let db = new sqlite3.Database('../database_files/inventory.db');
 
 sql = `CREATE TABLE IF NOT EXISTS Inventory (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
-       item TEXT UNIQUE,
-       quantity INTEGER,
-       price REAL
+       item TEXT NOT NULL UNIQUE,
+       quantity INTEGER NOT NULL ,
+       price REAL NOT NULL
        )`;
 
 db.run(sql,[], function(err) {
