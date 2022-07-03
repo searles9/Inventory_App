@@ -13,8 +13,8 @@ async function getInventory(page, limit) {
     }
 }
 
-async function renderInventory() {
-    let inventory = await getInventory();
+async function renderInventory(page, limit) {
+    let inventory = await getInventory(page, limit);
     let html = '';
     for (const item in inventory) {
         // console.log(inventory[item])
@@ -35,3 +35,5 @@ async function renderInventory() {
     let tableBodyDiv = document.querySelector('.divTableBody');
     tableBodyDiv.innerHTML = html;
 }
+
+renderInventory(1,25)
