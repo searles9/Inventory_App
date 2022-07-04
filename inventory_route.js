@@ -19,13 +19,18 @@ inventoryRouter.get('/', (req, res, next) => {
 
 })
 
-// inventoryRouter.get('/:item', (req, res, next) => {
-//     const item = tempData[req.params.item]
-//     if (item) {
-//         res.json(item)
-//     } else {
-//         res.status(404).send();
-//     }
-// })
+
+inventoryRouter.get('/totalItems', (req, res, next) => {
+  const query = `SELECT COUNT(*) FROM Inventory`;
+  db.get(query, function(err, row) {
+    if(err) {
+        throw err;
+    }
+    res.json({
+      totalItems: row["COUNT(*)"]
+    })
+  });
+
+})
 
 module.exports = inventoryRouter;

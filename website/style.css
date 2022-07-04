@@ -216,6 +216,16 @@ div.dbTable {
     padding: 2px 8px;
     border-radius: 5px;
   }
+
+  .dbTable .tableFootStyle .links p{
+    display: inline-block;
+    color: var(--green5);
+    padding-left: 0px;
+    padding-right: 0;
+    border-radius: 5px;
+    margin: 0;
+  }
+
   .dbTable.outerTableFooter {
     border-top: none;
   }
