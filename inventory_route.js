@@ -33,4 +33,43 @@ inventoryRouter.get('/totalItems', (req, res, next) => {
 
 })
 
+inventoryRouter.get('/totalQuantity', (req, res, next) => {
+  const query = `SELECT SUM(quantity) FROM Inventory`;
+  db.get(query, function(err, row) {
+    if(err) {
+        throw err;
+    }
+    res.json({
+      totalItems: row["SUM(quantity)"]
+    })
+  });
+
+})
+
+inventoryRouter.get('/mostInStock', (req, res, next) => {
+  const query = `SELECT *, MAX(quantity) FROM Inventory`;
+  db.get(query, function(err, row) {
+    if(err) {
+        throw err;
+    }
+    res.json({
+      mostInStock: row['item']
+    })
+  });
+
+})
+
+inventoryRouter.get('/leastInStock', (req, res, next) => {
+  const query = `SELECT *, MIN(quantity) FROM Inventory`;
+  db.get(query, function(err, row) {
+    if(err) {
+        throw err;
+    }
+    res.json({
+      leastInStock: row['item']
+    })
+  });
+
+})
+
 module.exports = inventoryRouter;

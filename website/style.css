@@ -126,7 +126,7 @@ body {
     width: 100%;
     overflow-x: scroll;
     overflow-y: hidden; 
-    white-space: nowrap; 
+    white-space: wrap; 
     overflow-wrap: break-word;
 }
 
@@ -147,7 +147,7 @@ body {
 }
 
 .fact-title {
-    font-size: 3vh;
+  font-size: 100%;
 }
 
 .fact-value {

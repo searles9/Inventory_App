@@ -7,12 +7,12 @@ function testFunc () {
     console.log('Worked!')
 }
 
-function runner (getValFunc) {
-    myObj.valueFunc()
+function runner (theObj) {
+    theObj.valueFunc()
 }
 
 
-runner()
+runner(myObj)
 
 
 // ---------------------------------------------------------------------------
@@ -39,4 +39,5 @@ dbFacts = [
 
 dbFacts.forEach(function (item, index) {
     console.log(item.factTitle);
+
   });
