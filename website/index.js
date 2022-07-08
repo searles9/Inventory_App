@@ -86,21 +86,6 @@ async function getInventory(page, limit) {
 }
 // --------------------------------------------------------- //
 // -------------------- DB FACTS CODE -------------------- //
-// Take an array of objects that contains the title, a placeholder value and the function to get the value
-// {factTitle: "x", factValue: "x"}
-// Run a for loop that generates the html 
-// Populate the html in the browser
-
-// Make a function to update the html   
-    // Take an array of objects that contains the title, a placeholder value and the function to get the value
-    // {factTitle: "x", factValue: "x"}
-    // Run a for loop that generates the html 
-    // Populate the html in the browser
-// ------ run this function when the page loads 
-// ------ run this function every 1 minitue on an interval 
-          // https://www.codegrepper.com/code-examples/javascript/javascript+run+every+minute
-          // https://www.willmaster.com/blog/javascript/javascript-setinterval.php
-
 async function renderFacts(factsObj) {
     let html = ''
     for (const item of factsObj) {
@@ -131,8 +116,14 @@ async function renderInventory(page, limit) {
           <div class="divTableCell">${inventory[item]['id']}</div>
           <div class="divTableCell">${inventory[item]['item']}</div>
           <div class="divTableCell">${inventory[item]['quantity']}</div>
-          <div class="divTableCell">$${inventory[item]['price']}</div>
-          <div class="divTableCell">EDIT</div>
+          <div class="divTableCell">${inventory[item]['price']}</div>
+          <div class="divTableCell editTableCell">
+            <ul>
+              <li>
+                <a href="#">Edit</a>
+              </li>
+            </ul>
+          </div>
         </div>
         `;
 
@@ -182,6 +173,67 @@ async function prevTablePage() {
     let footerNavHtml = await generateFooterNavMenuHtml(currentPage - 1)
     await renderFooterNavMenu(footerNavHtml)
 }
+// --------------------------------------------------------- //
+// -------------------- TABLE UPDATE CODE -------------------- //
+
+// add a function that called "rerenderPageAfterUpdate"
+    // run all the duplicate code below 
+
+async function displayOutcome(message) {
+    let outcomeMessage = document.querySelector('.form-outcome-message');
+    outcomeMessage.innerHTML = message;
+}
+
+async function clearItemForm() {
+    document.getElementById('item').value = "";
+    document.getElementById('quantity').value = "";
+    document.getElementById('price').value = "";
+}
+
+async function triggerEdit() {
+    // poulate the form with the values of the item
+}
+
+async function itemAdd() {
+    // check if the items already exists
+    // if it does prompt them to click update instead 
+    // clear the values in the form
+    // re-render table based on the current page
+    // re-render the footer
+    await renderFacts(dbFacts)
+    outcomeMessage = "X item has been added!"
+    displayOutcome(outcomeMessage)
+    clearItemForm()
+}
+
+async function itemUpdate() {
+    // check if the items exists
+    // if it does update it 
+    // clear the values in the form
+    // re-render table based on the current page
+    // re-render the footer
+    await renderFacts(dbFacts)
+    outcomeMessage = "X item has been updated!"
+    displayOutcome(outcomeMessage)
+    clearItemForm()
+}
+
+async function itemDelete() {
+    // check if the items exists
+    // if it does delete it 
+    // clear the values in the form
+    // re-render table based on the current page
+    // re-render the footer
+    await renderFacts(dbFacts)
+    outcomeMessage = "X item has been deleted!"
+    displayOutcome(outcomeMessage)
+    clearItemForm()
+}
+
+
+
+
+
 // --------------------------------------------------------- //
 // -------------------- LOAD PAGE CODE -------------------- //
 window.onload = async function renderPageAtLaunch() {

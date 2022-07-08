@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Inventory App</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./base_layout.css">
+  <link rel="stylesheet" href="./inventory_style.css">
 </head>
 
 <body onload=renderPageAtLaunch() >
@@ -54,12 +55,7 @@
         <div class="dbTable outerTableFooter">
           <div class="tableFootStyle">
             <div class="links">
-              <!--<a href="#">&laquo; Prev</a>
-              <p>Page</p>
-              <a href="#" class="currentPage">1</a>
-              <p>of</p>
-              <a href="#" class="TotalPages">60</a>
-              <a href="#">Next &raquo;</a>-->
+              <!--FOOTER LINKS WILL BE DYNAMICALLY POPULATED HERE-->
             </div>
           </div>
         </div>
@@ -74,7 +70,40 @@
           <h1>Workspace</h1>
           <hr size="2" width="70%">
           <br>
-          <button onclick="renderInventory(1,25)">Get Inventory</button>
+        </div>
+        <div class="workspace-parent-form-container">
+          <!-- <button onclick="renderInventory(1,25)">Get Inventory</button> -->
+          <div class="workspace-child-form-input-container">
+            <div class="form-outcome-container">
+              <p class="form-outcome-message">
+                <!-- THIS IS DYNAMICALLY POPULATED-->
+              </p>
+            </div>
+            <form>
+              <label for="item">Item:</label>
+              <input type="text" id="item" name="item" placeholder="Item..."><br><br>
+
+              <label for="quantity">Quantity:</label>
+              <input type="text" id="quantity" name="quantity" placeholder="Quantity..."><br><br>
+              
+              <label for="price">Price:</label>
+              <input type="text" id="price" name="price" placeholder="Price..."><br><br>
+            </form>
+          </div>
+          <div class="workspace-child-form-actions-container">
+            <ul>
+              <li>
+                <a href="#" onclick="itemAdd()">Add</a>
+              </li>
+              <li>
+                <a href="#" onclick="itemUpdate()">Update</a>
+              </li>
+              <li>
+                <a href="#" onclick="itemDelete()">Delete</a>
+              </li>
+            </ul>
+          </div>
+        </div>
         </div>
       </div>
       <!--------------------------------------------------------->

@@ -1,123 +1,4 @@
 /*========================*/
-/* THE MAIN CONTAINER DIVS*/
-/*========================*/
-
-:root {
-    --green1: #E8F3E8;
-    --green2: #92C591;
-    --green3: #559E54;
-    --green4: #305A30;
-    --green5:#203113;
-    --workspace-color: #76A952;
-
-}
-
-
-* {
-    list-style-type: none;
-    list-style: none;
-    text-decoration: none;
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-    transition: all 0.5s ease;   
-}
-
-body {
-    background-color: var(--green1);
-}
-
-.container{
-    margin: -8px;
-    
-}
-
-.column-left {
-    height: 100vh;
-    width: 15%;
-    background-color: var(--green5);
-    color: white;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1;
-    overflow-x: hidden; /* Disable horizontal scroll */
-}
-.column-center {
-    height: 100vh;
-    width: 65%;
-    background-color: var(--green1);
-    left: 15%;
-    margin-left: 15%;
-}
-.column-right {
-    height: 100vh;
-    width: 20%;
-    background-color: var(--workspace-color);
-    color: black;
-    position: fixed;
-    right: 0;
-    top: 0;
-    z-index: 1;
-}
-/*========================*/
-/* THE LEFT NAV TITLE*/
-/*========================*/
-.column-left .left-nav-title {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.column-left .left-nav-title h1 {
-    text-align: center;
-    margin: 15px 0 10px 0; /* top right bottom left */
-}
-
-/*========================*/
-/* THE LEFT NAV MENU ITEMS*/
-/*========================*/
-.column-left ul {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.column-left li a {
-    text-align: center;
-    display: block;
-    color: white;
-    padding: 8px 0px 8px 0px;
-    text-decoration: none;
-}
-
-.column-left li a.active {
-    background-color: #04AA6D;
-    color: white;
-}
-
-.column-left li a:hover {
-    background-color: #555;
-    color: white;
-}
-
-/*========================*/
-/* THE RIGHT WORKSPACE TITLE*/
-/*========================*/
-.column-right .right-workspace-title {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.column-right .right-workspace-title h1 {
-    text-align: center;
-    margin: 15px 0 10px 0; /* top right bottom left */
-}
-
-/*========================*/
-/* THE RIGHT NAV MENU ITEMS*/
-/*========================*/
-
-
-/*========================*/
 /* THE MIDDLE FACTS CONTAINER */
 /*========================*/
 
@@ -126,7 +7,7 @@ body {
     width: 100%;
     overflow-x: scroll;
     overflow-y: hidden; 
-    white-space: wrap; 
+    white-space: nowrap; 
     overflow-wrap: break-word;
 }
 
@@ -173,6 +54,29 @@ div.dbTable {
     font-size: 13px;
     color: #203113;
   }
+  /* ---- the edit buttons in the table --- */
+  .divTable.dbTable .divTableBody .divTableCell ul {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .divTable.dbTable .divTableBody .divTableCell li a {
+    text-align: center;
+    display: block;
+    color: white;
+    background-color: #A8A8A8;
+    padding: 1px 0px 1px 0px;
+    text-decoration: none;
+    border-radius: 5px;
+    /* font-weight: 600; */
+  }
+
+  .divTable.dbTable .divTableBody .divTableCell li a:hover {
+    background-color: #559E54;
+    color: white;
+  }
+  /* --------------------------------------- */
   .divTable.dbTable .divTableRow:nth-child(even) {
     background: #E8F3E8;
   }
@@ -241,3 +145,72 @@ div.dbTable {
   .divTableFoot { display: table-footer-group;}
   .divTableBody { display: table-row-group;}
 
+/*========================*/
+/* THE RIGHT SIDE FORM CONTAINER*/
+/*========================*/
+  .workspace-parent-form-container {
+    width: 80%;
+    margin-right: 10%;
+    margin-left: 10%;
+    border-radius: 10px;
+    background-color: var(--green3);
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border: 1px solid var(--green2);
+  }
+
+  .form-outcome-container p{
+    height: auto;
+    padding: 0;
+    margin: 0 0 5% 0;
+    text-align: center;
+    font-size: .8em;
+    border-bottom: 5px gray;
+  }
+
+
+  .workspace-child-form-input-container {
+    width: 80%;
+    margin-right: 10%;
+    margin-left: 10%;
+    color: white;
+  }
+
+  .workspace-child-form-input-container input {
+    width: 100%;
+    padding: 5px 20px;
+    margin: 1px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  /* ----------------------- */
+  .workspace-child-form-actions-container {
+    margin-right: 5%;
+    margin-left: 5%;
+    width: 90%;
+  }
+
+  .workspace-child-form-actions-container ul {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .workspace-child-form-actions-container li a {
+    text-align: center;
+    display: block;
+    color: white;
+    padding: 8px 0px 8px 0px;
+    text-decoration: none;
+    background-color: #A8A8A8;
+    margin-bottom: 8px;
+    border-radius: 5px;
+  }
+
+  .workspace-child-form-actions-container li a:hover {
+    background-color: #555;
+    color: white;
+  }
