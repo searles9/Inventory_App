@@ -19,8 +19,28 @@ inventoryRouter.get('/', (req, res, next) => {
 
 })
 
+inventoryRouter.post('/add',function(req,res,next) {
+  const item = req.body;
+  console.log(item)
+  let sql = `INSERT INTO Inventory (item, quantity, price) 
+    VALUES ($item, $quantity, $price)`;
 
-inventoryRouter.get('/totalItems', (req, res, next) => {
+  db.run(sql,{
+      $item: item.item,
+      $quantity: item.quantity,
+      $price: item.price
+  }, function(err) {
+      if (err) {
+        const error = new Error('Unable to add item!')
+        error.status = 400;
+        return next(error);
+      }
+      res.json({'rowId':this.lastID})
+    })
+})
+
+
+inventoryRouter.get('/facts/totalItems', (req, res, next) => {
   const query = `SELECT COUNT(*) FROM Inventory`;
   db.get(query, function(err, row) {
     if(err) {
@@ -33,7 +53,7 @@ inventoryRouter.get('/totalItems', (req, res, next) => {
 
 })
 
-inventoryRouter.get('/totalQuantity', (req, res, next) => {
+inventoryRouter.get('/facts/totalQuantity', (req, res, next) => {
   const query = `SELECT SUM(quantity) FROM Inventory`;
   db.get(query, function(err, row) {
     if(err) {
@@ -46,7 +66,7 @@ inventoryRouter.get('/totalQuantity', (req, res, next) => {
 
 })
 
-inventoryRouter.get('/mostInStock', (req, res, next) => {
+inventoryRouter.get('/facts/mostInStock', (req, res, next) => {
   const query = `SELECT *, MAX(quantity) FROM Inventory`;
   db.get(query, function(err, row) {
     if(err) {
@@ -59,7 +79,7 @@ inventoryRouter.get('/mostInStock', (req, res, next) => {
 
 })
 
-inventoryRouter.get('/leastInStock', (req, res, next) => {
+inventoryRouter.get('/facts/leastInStock', (req, res, next) => {
   const query = `SELECT *, MIN(quantity) FROM Inventory`;
   db.get(query, function(err, row) {
     if(err) {

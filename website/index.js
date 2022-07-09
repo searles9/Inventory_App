@@ -2,23 +2,25 @@
 // -------------------- GLOBAL VARS -------------------- //
 const baseUrl = 'http://localhost:8080';
 const itemsPerPage = 15
+let timerID = null;
+let _row = null;
 // facts array
 dbFacts = [
     {
         factTitle: "TOTAL SKUS",
-        factValueFunc: getTotalItems
+        factValueFunc: dbGetTotalItems
     },
     {
         factTitle: "TOTAL ITEMS IN STOCK",
-        factValueFunc: getTotalQuantity
+        factValueFunc: dbGetTotalQuantity
     },
     {
         factTitle: "MOST IN STOCK",
-        factValueFunc: getMostInStock
+        factValueFunc: dbGetMostInStock
     },
     {
         factTitle: "LEAST IN STOCK",
-        factValueFunc: getLeastInStock
+        factValueFunc: dbGetLeastInStock
     }
 ]
 // --------------------------------------------------------- //
@@ -35,8 +37,40 @@ async function findCurrentPage() {
 }
 // --------------------------------------------------------- //
 // -------------------- QUERY DB CODE -------------------- //
-async function getTotalItems() {
-    let url = baseUrl + '/inventory/totalItems'
+async function dbAddItem(item, quantity, price) {
+    let url = baseUrl + '/inventory/add'
+    options = {
+        method: 'POST',
+        body: JSON.stringify({
+            item,
+            quantity,
+            price
+        }),
+        headers : {
+            'Content-Type':'application/json'
+        }
+    }
+    console.log(options)
+    try {
+        let res = await (await fetch(url, options)).json();
+        console.log(`Sucessfully added item ${res}`)
+        return res
+    } catch (error) {
+        console.log(`Got error when adding item: ${error}`)
+        throw new Error(error)
+    }
+}
+
+async function dbUpdateItem() {
+    //
+}
+
+async function dbDeleteItem() {
+    //
+}
+
+async function dbGetTotalItems() {
+    let url = baseUrl + '/inventory/facts/totalItems'
     try {
         let res = await (await fetch(url)).json();
         return parseInt(res['totalItems'])
@@ -45,8 +79,8 @@ async function getTotalItems() {
     }
 }
 
-async function getTotalQuantity() {
-    let url = baseUrl + '/inventory/totalQuantity'
+async function dbGetTotalQuantity() {
+    let url = baseUrl + '/inventory/facts/totalQuantity'
     try {
         let res = await (await fetch(url)).json();
         return parseInt(res['totalItems'])
@@ -55,8 +89,8 @@ async function getTotalQuantity() {
     }
 }
 
-async function getMostInStock() {
-    let url = baseUrl + '/inventory/mostInStock'
+async function dbGetMostInStock() {
+    let url = baseUrl + '/inventory/facts/mostInStock'
     try {
         let res = await (await fetch(url)).json();
         return res['mostInStock']
@@ -65,8 +99,8 @@ async function getMostInStock() {
     }
 }
 
-async function getLeastInStock() {
-    let url = baseUrl + '/inventory/leastInStock'
+async function dbGetLeastInStock() {
+    let url = baseUrl + '/inventory/facts/leastInStock'
     try {
         let res = await (await fetch(url)).json();
         return res['leastInStock']
@@ -75,7 +109,7 @@ async function getLeastInStock() {
     }
 }
 
-async function getInventory(page, limit) {
+async function dbGetInventory(page, limit) {
     let url = baseUrl + `/inventory?page=${page}&limit=${limit}`;
     try {
         let res = await fetch(url);
@@ -108,7 +142,7 @@ async function renderFacts(factsObj) {
 // -------------------- DB TABLE CODE -------------------- //
 
 async function renderInventory(page, limit) {
-    let inventory = await getInventory(page, limit);
+    let inventory = await dbGetInventory(page, limit);
     let html = '';
     for (const item in inventory) {
         let htmlSegment = `
@@ -120,7 +154,7 @@ async function renderInventory(page, limit) {
           <div class="divTableCell editTableCell">
             <ul>
               <li>
-                <a href="#">Edit</a>
+                <a href="#" onclick="triggerEdit(this)">Edit</a>
               </li>
             </ul>
           </div>
@@ -137,7 +171,7 @@ async function renderInventory(page, limit) {
 // -------------------- FOOTER NAV CODE -------------------- //
 async function generateFooterNavMenuHtml(pageToRenderFor) {
     // Get total pages needed based on the number of items in the DB
-    let totalItems = await getTotalItems()
+    let totalItems = await dbGetTotalItems()
     let totalPages = Math.ceil(totalItems / itemsPerPage)
     let html = ''; 
     if ( pageToRenderFor > 1) {
@@ -179,9 +213,39 @@ async function prevTablePage() {
 // add a function that called "rerenderPageAfterUpdate"
     // run all the duplicate code below 
 
-async function displayOutcome(message) {
+async function fillFormInputs(item, quantity, price) {
+    document.getElementById('item').value = item;
+    document.getElementById('quantity').value = quantity;
+    document.getElementById('price').value = price;
+}
+
+async function getFormInputs() {
+    let item = document.getElementById("item").value; 
+    let quantity = document.getElementById("quantity").value; 
+    let price = document.getElementById("price").value; 
+    if (item === "" || quantity === "" || price === "") {
+        throw new Error('Form inputs are empty!')
+    }
+    return {
+        item,
+        quantity,
+        price
+    }
+}
+
+async function displayOutcome(message, errorMessage = false) {
     let outcomeMessage = document.querySelector('.form-outcome-message');
     outcomeMessage.innerHTML = message;
+
+    // starting/restarting timer
+    clearTimeout(timerID)
+    
+    if (errorMessage === false) {
+        timerID = setTimeout(() => {
+            let outcomeMessage = document.querySelector('.form-outcome-message');
+            outcomeMessage.innerHTML = '';
+        }, 10000)
+    }
 }
 
 async function clearItemForm() {
@@ -190,8 +254,19 @@ async function clearItemForm() {
     document.getElementById('price').value = "";
 }
 
-async function triggerEdit() {
+async function triggerEdit(editButton) {
+    //_row = editButton.parentElement
+    _row = editButton.closest(".divTableRow")
+    let cols = _row.children;
+    let item = cols[1].innerHTML
+    let quantity = cols[2].innerHTML
+    let price = cols[3].innerHTML
+    await fillFormInputs(item, quantity, price)
+    //divTableRow
     // poulate the form with the values of the item
+    // console.log(`Got the item value: ${x}`)
+    // console.log(`Got the quantity value: ${x}`)
+    // console.log(`Got the price value: ${x}`)
 }
 
 async function itemAdd() {
@@ -200,8 +275,32 @@ async function itemAdd() {
     // clear the values in the form
     // re-render table based on the current page
     // re-render the footer
+    let outcome;
+    try {
+        formInput = await getFormInputs()
+    } catch {
+        displayOutcome('Fill out the form!', true)
+        return
+    }
+
+    try {
+        outcome = await dbAddItem(
+            formInput.item,
+            formInput.quantity,
+            formInput.price
+        ) 
+        console.log(outcome)
+    } catch (e) {
+        outcomeMessage = `Unable to add item: ${e}`
+        displayOutcome(outcomeMessage, true)
+        return
+    }
     await renderFacts(dbFacts)
-    outcomeMessage = "X item has been added!"
+    currentPage = await findCurrentPage()
+    await renderInventory(currentPage,itemsPerPage)
+    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
+    await renderFooterNavMenu(footerNavHtml)
+    outcomeMessage = `"${formInput.item}" has been added!`
     displayOutcome(outcomeMessage)
     clearItemForm()
 }
@@ -243,14 +342,10 @@ window.onload = async function renderPageAtLaunch() {
     await renderFacts(dbFacts)
 
     // render facts at an interval (interval in ms)
-    renderFactsInterval = 60000
+    renderFactsInterval = 60000 // 1 minute: 60000
     setInterval(function(){ 
         renderFacts(dbFacts)
     }, renderFactsInterval);
-    // 2 seconds: 2000
-    // 10 seconds:  10000
-    // 30 seconds:  30000
-    // 1 minute: 60000
 }
 
 
@@ -260,3 +355,15 @@ window.onload = async function renderPageAtLaunch() {
 // Update the CSS for the facts so the titles dynamically size and dont get cut off
     // Might be able to do this by making a div within the div and then setting...
     // white-space: wrap; 
+// review the server errors - should return 400 in post but it gave 500
+// Update inventory routes to return the correct errors
+// Make sure the front end is handling the errors properly 
+// Add input validation - types used in the form must be correct 
+
+// STEPS:
+// 1: Make route that adds an item - POST
+// 2: Make a route that updates an item - PUT
+// 3: Make a route that deletes an item - DELETE (router.delete - use a paramater)
+
+// TO-DO: add a function to the inventory route that checks if the item already exists
+// if you try to create it should make an error that says "Item already exists, try updating instead!" 

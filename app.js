@@ -21,3 +21,9 @@ app.get('/',function(req,res) {
     res.sendFile(__dirname + '/website/index.html')
 })
 
+app.use((err, req, res, next) => {
+    if (!err.status) {
+      err.status = 500;
+    }
+    res.status(err.status).send(err.message);
+  });
