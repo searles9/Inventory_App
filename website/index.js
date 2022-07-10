@@ -50,15 +50,16 @@ async function dbAddItem(item, quantity, price) {
             'Content-Type':'application/json'
         }
     }
-    console.log(options)
-    try {
-        let res = await (await fetch(url, options)).json();
-        console.log(`Sucessfully added item ${res}`)
-        return res
-    } catch (error) {
-        console.log(`Got error when adding item: ${error}`)
-        throw new Error(error)
+
+    res = await (await fetch(url, options));
+    if (res.ok) {
+        return data = await res.json()
     }
+    return res.text().then(text => {
+        errorMessage = `${res.status} - ${JSON.parse(text).errors}`
+        console.log(errorMessage)
+        throw new Error(errorMessage)
+    })
 }
 
 async function dbUpdateItem() {
@@ -270,11 +271,6 @@ async function triggerEdit(editButton) {
 }
 
 async function itemAdd() {
-    // check if the items already exists
-    // if it does prompt them to click update instead 
-    // clear the values in the form
-    // re-render table based on the current page
-    // re-render the footer
     let outcome;
     try {
         formInput = await getFormInputs()
@@ -291,7 +287,8 @@ async function itemAdd() {
         ) 
         console.log(outcome)
     } catch (e) {
-        outcomeMessage = `Unable to add item: ${e}`
+        console.log(e)
+        outcomeMessage = `${e}`
         displayOutcome(outcomeMessage, true)
         return
     }
@@ -306,24 +303,43 @@ async function itemAdd() {
 }
 
 async function itemUpdate() {
-    // check if the items exists
-    // if it does update it 
+    try {
+        formInput = await getFormInputs()
+    } catch {
+        displayOutcome('Fill out the form!', true)
+        return
+    }
+    // if it does exist update it 
     // clear the values in the form
     // re-render table based on the current page
     // re-render the footer
     await renderFacts(dbFacts)
+    currentPage = await findCurrentPage()
+    await renderInventory(currentPage,itemsPerPage)
+    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
+    await renderFooterNavMenu(footerNavHtml)
     outcomeMessage = "X item has been updated!"
     displayOutcome(outcomeMessage)
     clearItemForm()
 }
 
 async function itemDelete() {
+    try {
+        formInput = await getFormInputs()
+    } catch {
+        displayOutcome('Fill out the form!', true)
+        return
+    }
     // check if the items exists
     // if it does delete it 
     // clear the values in the form
     // re-render table based on the current page
     // re-render the footer
     await renderFacts(dbFacts)
+    currentPage = await findCurrentPage()
+    await renderInventory(currentPage,itemsPerPage)
+    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
+    await renderFooterNavMenu(footerNavHtml)
     outcomeMessage = "X item has been deleted!"
     displayOutcome(outcomeMessage)
     clearItemForm()
@@ -361,9 +377,13 @@ window.onload = async function renderPageAtLaunch() {
 // Add input validation - types used in the form must be correct 
 
 // STEPS:
-// 1: Make route that adds an item - POST
+// DONE - 1: Make route that adds an item - POST
+// 2: Make a route that checks if an items exists
 // 2: Make a route that updates an item - PUT
 // 3: Make a route that deletes an item - DELETE (router.delete - use a paramater)
 
+
 // TO-DO: add a function to the inventory route that checks if the item already exists
 // if you try to create it should make an error that says "Item already exists, try updating instead!" 
+
+// How to validate input server side in express.js

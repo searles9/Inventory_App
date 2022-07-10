@@ -2,6 +2,23 @@ const express = require('express');
 const inventoryRouter = express.Router();
 const db = require('./db.js');
 
+function itemExistsInTable (itemName) {
+  const query = `SELECT * FROM Inventory WHERE item = $itemName LIMIT 1`
+  return new Promise((resolve, reject) => {
+      db.get(query, {
+          $itemName: itemName
+      },function(err, row) {
+          if(err) {
+              reject(err);
+          }
+          if (row) {
+              resolve(true)
+          }
+          resolve(false)
+        });
+  })
+}
+
 
 inventoryRouter.get('/', (req, res, next) => {
   // offset - what row to start at 
@@ -19,9 +36,17 @@ inventoryRouter.get('/', (req, res, next) => {
 
 })
 
-inventoryRouter.post('/add',function(req,res,next) {
+inventoryRouter.post('/add',async function(req,res,next) {
   const item = req.body;
-  console.log(item)
+
+  itemExists = await itemExistsInTable(item.item)
+  if (itemExists) {
+    const error = new Error(`"${item.item}" item already exists. Update the item instead!`)
+    error.status = 409;
+    return next(error);
+  } 
+
+
   let sql = `INSERT INTO Inventory (item, quantity, price) 
     VALUES ($item, $quantity, $price)`;
 
@@ -31,12 +56,28 @@ inventoryRouter.post('/add',function(req,res,next) {
       $price: item.price
   }, function(err) {
       if (err) {
+        console.log('SERVER SIDE ERROR - Unable to add item')
         const error = new Error('Unable to add item!')
         error.status = 400;
         return next(error);
       }
       res.json({'rowId':this.lastID})
     })
+})
+
+inventoryRouter.put('/update/:item',async function(req,res,next) {
+  // check if item exits
+      // if it doesnt return an error saying that the item doesnt exist
+        // they should use add instead or check the spelling
+        // this is error 404
+      // if it does make the update
+})
+
+inventoryRouter.delete('/delete/:item',async function(req,res,next) {
+  // check if the item exists
+      // if it doesnt exists then return an error saying that it doesnt exist
+          // this is error 404
+      // if it does exist delete it
 })
 
 
