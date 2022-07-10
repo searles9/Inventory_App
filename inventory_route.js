@@ -66,11 +66,21 @@ inventoryRouter.post('/add',async function(req,res,next) {
 })
 
 inventoryRouter.put('/update/:item',async function(req,res,next) {
+  // req.params.item
+
   // check if item exits
       // if it doesnt return an error saying that the item doesnt exist
         // they should use add instead or check the spelling
         // this is error 404
       // if it does make the update
+
+      // FOR THE PARAMATERS:
+      // CLIENT:
+      // str.replace(" ", "%20")
+      
+      // SERVER: 
+      // server-side: str.replace("%20", " ")
+      
 })
 
 inventoryRouter.delete('/delete/:item',async function(req,res,next) {
@@ -78,6 +88,14 @@ inventoryRouter.delete('/delete/:item',async function(req,res,next) {
       // if it doesnt exists then return an error saying that it doesnt exist
           // this is error 404
       // if it does exist delete it
+
+      // FOR THE PARAMATERS:
+      // CLIENT:
+      // str.replace(" ", "%20")
+      
+      // SERVER: 
+      // server-side: str.replace("%20", " ")
+      
 })
 
 

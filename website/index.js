@@ -62,12 +62,24 @@ async function dbAddItem(item, quantity, price) {
     })
 }
 
-async function dbUpdateItem() {
-    //
+async function dbUpdateItem(item) {
+    let url = baseUrl + `/inventory/update/${item}`
+    options = {
+        method: 'PUT',
+        headers : {
+            'Content-Type':'application/json'
+        }
+    }
 }
 
 async function dbDeleteItem() {
-    //
+    let url = baseUrl + `/inventory/delete/${item}`
+    options = {
+        method: 'DELETE',
+        headers : {
+            'Content-Type':'application/json'
+        }
+    }
 }
 
 async function dbGetTotalItems() {
