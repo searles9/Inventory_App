@@ -19,6 +19,10 @@ function itemExistsInTable (itemName) {
   })
 }
 
+function addSpacesToUrl(url) {
+  return url.replace("%20", " ")
+}
+
 
 inventoryRouter.get('/', (req, res, next) => {
   // offset - what row to start at 
@@ -65,37 +69,61 @@ inventoryRouter.post('/add',async function(req,res,next) {
     })
 })
 
-inventoryRouter.put('/update/:item',async function(req,res,next) {
-  // req.params.item
+inventoryRouter.put('/update',async function(req,res,next) {
+  const item = req.body;
 
-  // check if item exits
-      // if it doesnt return an error saying that the item doesnt exist
-        // they should use add instead or check the spelling
-        // this is error 404
-      // if it does make the update
+  itemExists = await itemExistsInTable(item.item)
+  if (!itemExists) {
+    const error = new Error(`"${item.item}" does not exist. Add the item instead!`)
+    error.status = 404;
+    return next(error);
+  } 
 
-      // FOR THE PARAMATERS:
-      // CLIENT:
-      // str.replace(" ", "%20")
-      
-      // SERVER: 
-      // server-side: str.replace("%20", " ")
-      
+  sql = `UPDATE Inventory
+         SET quantity = $quantity,
+         price = $price
+         WHERE
+         item = $item`
+
+  db.run(sql,{
+          $item: item.item,
+          $quantity: item.quantity,
+          $price: item.price
+  }, function(err) {
+    if (err) {
+      console.log('SERVER SIDE ERROR - Unable to update item')
+      const error = new Error('Unable to update item!')
+      error.status = 400;
+      return next(error);
+    }
+    res.json({'rowId':this.lastID})
+  })
+
 })
 
 inventoryRouter.delete('/delete/:item',async function(req,res,next) {
-  // check if the item exists
-      // if it doesnt exists then return an error saying that it doesnt exist
-          // this is error 404
-      // if it does exist delete it
+  item = addSpacesToUrl(req.params.item)
 
-      // FOR THE PARAMATERS:
-      // CLIENT:
-      // str.replace(" ", "%20")
-      
-      // SERVER: 
-      // server-side: str.replace("%20", " ")
-      
+  itemExists = await itemExistsInTable(item)
+  if (!itemExists) {
+    const error = new Error(`"${item}" item does not exist. Nothing to delete!`)
+    error.status = 404;
+    return next(error);
+  } 
+
+  sql = `DELETE FROM Inventory WHERE item = "${item}"`
+
+  db.run(sql,{
+    $item: item.item
+  }, function(err) {
+  if (err) {
+    console.log(err)
+    console.log('SERVER SIDE ERROR - Unable to delete item')
+    const error = new Error('Unable to delete item!')
+    return next(error);
+  }
+  res.json({'rowId':this.lastID})
+  })    
 })
 
 

@@ -14,7 +14,7 @@ async function addRow (rowObj) {
         if (err) {
             return console.log(err.message)
         }
-        console.log(`Row ready: ${this.lastID}`)
+        //console.log(`Row ready: ${this.lastID}`)
     })
 }
 
@@ -27,6 +27,7 @@ function getRandomFloat(min,max) {
 }
 
 async function addAllRows(numOfRows) {
+    console.log('Inserting rows')
     for (let step = 0; step < numOfRows; step++) {
         let dbRow = {
             item: `Item ${step}`,
@@ -35,10 +36,9 @@ async function addAllRows(numOfRows) {
         }
         await addRow(dbRow)
     }
-
     db.close()
 }
 
-addAllRows(60)
+addAllRows(1000)
 
 

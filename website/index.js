@@ -35,6 +35,18 @@ async function findCurrentPage() {
     }
     return activePage
 }
+
+function removeUrlSpaces(url) {
+    return url.replace(" ", "%20")
+}
+
+async function reRenderPage() {
+    await renderFacts(dbFacts)
+    currentPage = await findCurrentPage()
+    await renderInventory(currentPage,itemsPerPage)
+    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
+    await renderFooterNavMenu(footerNavHtml)
+}
 // --------------------------------------------------------- //
 // -------------------- QUERY DB CODE -------------------- //
 async function dbAddItem(item, quantity, price) {
@@ -62,24 +74,49 @@ async function dbAddItem(item, quantity, price) {
     })
 }
 
-async function dbUpdateItem(item) {
-    let url = baseUrl + `/inventory/update/${item}`
+async function dbUpdateItem(item,quantity,price) {
+    let url = baseUrl + `/inventory/update`
     options = {
         method: 'PUT',
+        body: JSON.stringify({
+            item,
+            quantity,
+            price
+        }),
         headers : {
             'Content-Type':'application/json'
         }
     }
+
+    res = await (await fetch(url, options));
+    if (res.ok) {
+        return data = await res.json()
+    }
+    return res.text().then(text => {
+        errorMessage = `${res.status} - ${JSON.parse(text).errors}`
+        console.log(errorMessage)
+        throw new Error(errorMessage)
+    })
 }
 
-async function dbDeleteItem() {
-    let url = baseUrl + `/inventory/delete/${item}`
+async function dbDeleteItem(item) {
+    let url = baseUrl + `/inventory/delete/${removeUrlSpaces(item)}`
     options = {
         method: 'DELETE',
         headers : {
             'Content-Type':'application/json'
         }
     }
+
+    res = await (await fetch(url, options));
+    if (res.ok) {
+        return data = await res.json()
+    }
+    return res.text().then(text => {
+        errorMessage = `${res.status} - ${JSON.parse(text).errors}`
+        console.log(errorMessage)
+        throw new Error(errorMessage)
+    })
 }
 
 async function dbGetTotalItems() {
@@ -250,6 +287,12 @@ async function displayOutcome(message, errorMessage = false) {
     let outcomeMessage = document.querySelector('.form-outcome-message');
     outcomeMessage.innerHTML = message;
 
+    if (errorMessage) {
+        outcomeMessage.style.color = 'white'
+    } else {
+        outcomeMessage.style.color = 'white' // #203113
+    }
+
     // starting/restarting timer
     clearTimeout(timerID)
     
@@ -298,39 +341,43 @@ async function itemAdd() {
             formInput.price
         ) 
         console.log(outcome)
-    } catch (e) {
-        console.log(e)
-        outcomeMessage = `${e}`
+    } catch (error) {
+        console.log(error)
+        outcomeMessage = `${error}`
         displayOutcome(outcomeMessage, true)
         return
     }
-    await renderFacts(dbFacts)
-    currentPage = await findCurrentPage()
-    await renderInventory(currentPage,itemsPerPage)
-    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
-    await renderFooterNavMenu(footerNavHtml)
+    await reRenderPage()
     outcomeMessage = `"${formInput.item}" has been added!`
     displayOutcome(outcomeMessage)
     clearItemForm()
 }
 
 async function itemUpdate() {
+    let outcome;
     try {
         formInput = await getFormInputs()
     } catch {
         displayOutcome('Fill out the form!', true)
         return
     }
-    // if it does exist update it 
-    // clear the values in the form
-    // re-render table based on the current page
-    // re-render the footer
-    await renderFacts(dbFacts)
-    currentPage = await findCurrentPage()
-    await renderInventory(currentPage,itemsPerPage)
-    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
-    await renderFooterNavMenu(footerNavHtml)
-    outcomeMessage = "X item has been updated!"
+    
+    try {
+        outcome = await dbUpdateItem(
+            formInput.item,
+            formInput.quantity,
+            formInput.price
+        ) 
+        console.log(outcome)
+    } catch (error) {
+        console.log(error)
+        outcomeMessage = `${error}`
+        displayOutcome(outcomeMessage, true)
+        return
+    }
+
+    await reRenderPage()
+    outcomeMessage = `"${formInput.item}" item has been updated!`
     displayOutcome(outcomeMessage)
     clearItemForm()
 }
@@ -342,17 +389,19 @@ async function itemDelete() {
         displayOutcome('Fill out the form!', true)
         return
     }
-    // check if the items exists
-    // if it does delete it 
-    // clear the values in the form
-    // re-render table based on the current page
-    // re-render the footer
-    await renderFacts(dbFacts)
-    currentPage = await findCurrentPage()
-    await renderInventory(currentPage,itemsPerPage)
-    let footerNavHtml = await generateFooterNavMenuHtml(currentPage)
-    await renderFooterNavMenu(footerNavHtml)
-    outcomeMessage = "X item has been deleted!"
+    
+    try {
+        outcome = await dbDeleteItem(formInput.item) 
+        console.log(outcome)
+    } catch (error) {
+        console.log(error)
+        outcomeMessage = `${error}`
+        displayOutcome(outcomeMessage, true)
+        return
+    }
+
+    await reRenderPage()
+    outcomeMessage = `"${formInput.item}" item has been deleted!`
     displayOutcome(outcomeMessage)
     clearItemForm()
 }
@@ -378,24 +427,7 @@ window.onload = async function renderPageAtLaunch() {
 
 
 // TO-DO
-// Add an edit/add/delete button 
-// Split this file into multible files/modules
-// Update the CSS for the facts so the titles dynamically size and dont get cut off
-    // Might be able to do this by making a div within the div and then setting...
-    // white-space: wrap; 
-// review the server errors - should return 400 in post but it gave 500
-// Update inventory routes to return the correct errors
-// Make sure the front end is handling the errors properly 
-// Add input validation - types used in the form must be correct 
-
-// STEPS:
-// DONE - 1: Make route that adds an item - POST
-// 2: Make a route that checks if an items exists
-// 2: Make a route that updates an item - PUT
-// 3: Make a route that deletes an item - DELETE (router.delete - use a paramater)
-
-
-// TO-DO: add a function to the inventory route that checks if the item already exists
-// if you try to create it should make an error that says "Item already exists, try updating instead!" 
-
-// How to validate input server side in express.js
+// Update the error handling for the fact endpoints
+// Add validation on the back end for the API calls
+// Add validation on the front end for the API calls 
+// Add the ability to rename a row
