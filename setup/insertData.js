@@ -39,6 +39,6 @@ async function addAllRows(numOfRows) {
     db.close()
 }
 
-addAllRows(1000)
+addAllRows(70)
 
 
